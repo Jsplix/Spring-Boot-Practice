@@ -4,6 +4,7 @@ import com.practice.blog.bounded_context.auth.dto.UserInfoDto;
 import com.practice.blog.bounded_context.auth.entity.User;
 import com.practice.blog.bounded_context.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User create(User user) {
         return userRepository.save(user);
@@ -23,8 +25,7 @@ public class UserService {
 
     public User update(Long userId, UserInfoDto userInfoDto) {
         User user = read(userId);
-        user.update(userInfoDto.nickname(), userInfoDto.password());
-
+        user.update(userInfoDto.nickname(), bCryptPasswordEncoder.encode(userInfoDto.password()));
         return user;
     }
 
