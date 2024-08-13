@@ -1,8 +1,8 @@
-package com.practice.blog.bounded_context.user.dto;
+package com.practice.blog.bounded_context.auth.dto;
 
-import com.practice.blog.bounded_context.user.entity.User;
+import com.practice.blog.bounded_context.auth.entity.User;
 
-public record UserRequestDto(
+public record UserInfoDto(
         String username,
         String nickname,
         String password,

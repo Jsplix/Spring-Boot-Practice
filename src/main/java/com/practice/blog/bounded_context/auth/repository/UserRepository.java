@@ -1,6 +1,6 @@
-package com.practice.blog.bounded_context.user.repository;
+package com.practice.blog.bounded_context.auth.repository;
 
-import com.practice.blog.bounded_context.user.entity.User;
+import com.practice.blog.bounded_context.auth.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

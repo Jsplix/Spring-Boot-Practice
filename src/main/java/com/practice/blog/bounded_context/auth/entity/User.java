@@ -1,4 +1,4 @@
-package com.practice.blog.bounded_context.user.entity;
+package com.practice.blog.bounded_context.auth.entity;
 
 import com.practice.blog.base.entity.BaseTime;
 import jakarta.persistence.Column;
@@ -40,11 +40,8 @@ public class User extends BaseTime {
         this.email = email;
     }
 
-    private void updateNickname(String nickname) {
+    public void update(String nickname, String password) {
         this.nickname = nickname;
-    }
-
-    private void updatePassword(String password) {
         this.password = password;
     }
 

@@ -1,4 +1,4 @@
-package com.practice.blog.bounded_context.user.controller;
+package com.practice.blog.bounded_context.auth.controller;
 
 import org.springframework.stereotype.Controller;
 
