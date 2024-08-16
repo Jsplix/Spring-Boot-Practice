@@ -23,6 +23,11 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
     }
 
+    public User read(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
+    }
+
     public User update(Long userId, UserInfoDto userInfoDto) {
         User user = read(userId);
         user.update(userInfoDto.nickname(), bCryptPasswordEncoder.encode(userInfoDto.password()));
