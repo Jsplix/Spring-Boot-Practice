@@ -1,14 +1,17 @@
 package com.practice.blog.bounded_context.auth.service;
 
+import com.practice.blog.base.exception.GlobalException;
 import com.practice.blog.base.jwt.util.JwtUtil;
 import com.practice.blog.bounded_context.auth.dto.SignInReqDto;
 import com.practice.blog.bounded_context.auth.dto.SignInResDto;
 import com.practice.blog.bounded_context.auth.dto.UserInfoDto;
 import com.practice.blog.bounded_context.auth.entity.User;
+import com.practice.blog.bounded_context.auth.exception.AuthExceptionCode;
 import com.practice.blog.bounded_context.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,7 @@ public class AuthService {
 
     private String grantType = "Bearer";
 
+    @Transactional
     public User signUp(UserInfoDto userInfoDto) {
 
         if (duplicateUsername(userInfoDto.username())) {
@@ -36,11 +40,12 @@ public class AuthService {
         return userService.create(user);
     }
 
+    @Transactional(readOnly = true)
     public SignInResDto signIn(SignInReqDto signInReqDto) {
         User user = userService.read(signInReqDto.getUsername());
 
-        if (bCryptPasswordEncoder.matches(user.getPassword(), signInReqDto.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+        if (!bCryptPasswordEncoder.matches(signInReqDto.getPassword(), user.getPassword())) {
+            throw new GlobalException(AuthExceptionCode.INVALID_PASSWORD);
         }
 
         String accessToken = grantType + " " + jwtUtil.generateToken(user.getId(), user.getUsername());
