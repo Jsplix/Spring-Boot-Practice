@@ -8,14 +8,18 @@ import com.practice.blog.bounded_context.auth.dto.UserInfoDto;
 import com.practice.blog.bounded_context.auth.entity.User;
 import com.practice.blog.bounded_context.auth.exception.AuthExceptionCode;
 import com.practice.blog.bounded_context.auth.repository.UserRepository;
+import com.practice.blog.bounded_context.auth.type.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthService implements UserDetailsService {
 
     private final JwtUtil jwtUtil;
     private final UserService userService;
@@ -35,7 +39,9 @@ public class AuthService {
                 .username(userInfoDto.username())
                 .nickname(userInfoDto.nickname())
                 .password(bCryptPasswordEncoder.encode(userInfoDto.password()))
-                .email(userInfoDto.email()).build();
+                .email(userInfoDto.email())
+                .role(Role.USER)
+                .build();
 
         return userService.create(user);
     }
@@ -63,5 +69,14 @@ public class AuthService {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username).get();
+        if (user != null) {
+            return user;
+        }
+        return null;
     }
 }
